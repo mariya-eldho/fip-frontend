@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { useRouter } from "next/router";
+import Orders from "../../components/Orders";
 import { Button } from "carbon-components-react";
 import { signOut } from "../../store/slices/authSlice";
 import { useDispatch, useSelector } from "react-redux";
@@ -28,21 +29,24 @@ const Home = () => {
       style={{
         display: "flex",
         flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        height: "100vh",
+        height: "100%",
+        width: "80%",
+        margin: "auto",
+        padding: "90px",
       }}
     >
+      <Orders />
       {loadingUser && <p>Loading...</p>}
       {user && (
-        <div>
-          Congratulations {user?.email}! You are logged in as a consumer
+        <div style={{paddingTop: "10%",}}> 
+          <Button onClick={handleLogout}>
+            Sign Out
+          </Button>
         </div>
       )}
-      <Button onClick={handleLogout} style={{ marginTop: "20px" }}>
-        Sign Out
-      </Button>
+     
     </div>
+
   );
 };
 
