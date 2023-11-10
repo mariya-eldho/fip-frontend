@@ -15,7 +15,11 @@ const LoginPage = () => {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const handleGoogleSignIn = async () => await dispatch(signinWithGoogle());
+
+  const handleGoogleSignIn = async () => {
+    await dispatch(signinWithGoogle());
+    router.push("/service-provider");
+  };
 
   const onSubmit = async (e) => {
     e.preventDefault();

@@ -21,11 +21,11 @@ const NavBar = () => {
       <HeaderName href="/" prefix="IBM">
         Straw Hats
       </HeaderName>
-      <HeaderNavigation aria-label="Carbon Tutorial">
+      {/* <HeaderNavigation aria-label="Carbon Tutorial">
         <HeaderMenuItem href="#">Link 1</HeaderMenuItem>
         <HeaderMenuItem href="#">Link 2</HeaderMenuItem>
         <HeaderMenuItem href="#">Link 3</HeaderMenuItem>
-      </HeaderNavigation>
+      </HeaderNavigation> */}
       <HeaderGlobalBar>
         <HeaderGlobalAction aria-label="Notifications" onClick={() => {}}>
           <Search size={20} />{" "}
