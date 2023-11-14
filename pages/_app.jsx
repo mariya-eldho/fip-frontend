@@ -8,6 +8,7 @@ import { store } from "../store";
 
 function MyApp({ Component, pageProps }) {
   return (
+
     <Theme theme="white">
       <Provider store={store}>
         <ProtectedRoute>

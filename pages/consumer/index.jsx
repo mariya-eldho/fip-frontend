@@ -4,6 +4,7 @@ import Orders from "../../components/Orders";
 import { Button } from "carbon-components-react";
 import { signOut } from "../../store/slices/authSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { Theme } from "@carbon/react";
 
 const Home = () => {
   const router = useRouter();
@@ -25,28 +26,26 @@ const Home = () => {
     router.push("/");
   };
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        height: "100%",
-        width: "80%",
-        margin: "auto",
-        padding: "90px",
-      }}
-    >
-      <Orders />
-      {loadingUser && <p>Loading...</p>}
-      {user && (
-        <div style={{paddingTop: "10%",}}> 
-          <Button onClick={handleLogout}>
-            Sign Out
-          </Button>
-        </div>
-      )}
-     
-    </div>
-
+    <Theme theme="g10">
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          height: "100%",
+          width: "80%",
+          margin: "auto",
+          padding: "90px",
+        }}
+      >
+        <Orders />
+        {loadingUser && <p>Loading...</p>}
+        {user && (
+          <div style={{ marginTop: "20px" }}>
+            <Button onClick={handleLogout}>Sign Out</Button>
+          </div>
+        )}
+      </div>
+    </Theme>
   );
 };
 
