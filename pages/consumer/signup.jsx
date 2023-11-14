@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
+import Image from "next/image";
 import { Form, TextInput, Button } from "carbon-components-react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -8,6 +9,8 @@ import {
 } from "../../store/slices/authSlice";
 import { FcGoogle } from "react-icons/fc";
 import styles from "../../styles/login.module.scss";
+import YourImage from '../../public/img.jpg';
+
 
 const SignUp = () => {
   const [userName, setUserName] = useState("");
@@ -35,16 +38,13 @@ const SignUp = () => {
     router.push("/consumer");
   };
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        height: "100vh",
-      }}
-    >
-      <Form onSubmit={onSubmit} style={{ width: "300px" }}>
+    <div className={styles.loginPageContainer}>
+      {/* Move the login form to the left */}
+      <div className={styles.loginForm}>
+      <div className={styles.loginHeading}>
+        <h4>Sign Up</h4>
+      </div>
+      <Form onSubmit={onSubmit} style={{ width: "320px" }}>
         <TextInput
           id="userName"
           labelText="Name"
@@ -65,27 +65,33 @@ const SignUp = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <Button type="submit" style={{ marginTop: "20px", width: "100%" }}>
-          Sign Up as Consumer
+        <Button type="submit" style={{ marginTop: "20px", paddingLeft: "19%" ,width:"100%", backgroundColor:"#450d73", justifyContent:"space-around",}}>
+        SIGN UP
         </Button>
-      </Form>
-      <Button onClick={handleGoogleSignIn} className={styles.googleSignIn}>
+      </Form> <br />
+      <p style={{alignContent: "center"}}>OR</p>
+      <Button onClick={handleGoogleSignIn} className={styles.googleSignIn} style={{backgroundColor: "#450d73",}}>
         <FcGoogle style={{ marginRight: "1rem", height: "20px" }} />
         Sign in with Google
       </Button>
       <div className="mt-5"></div>
       {error && <p style={{ color: "red" }}>{error}</p>}
-      <div style={{ marginTop: "20px" }}>
-        Already have an account?{" "}
+      <div style={{ marginTop: "20px", textAlign: "center", }}>
+        Already have an account?{" "} <br />
         <a
           onClick={() => router.push("/consumer/login")}
-          style={{ cursor: "pointer", color: "#0f62fe" }}
+          style={{ cursor: "pointer", color: "#450d73" }}
         >
           Log in
         </a>
       </div>
     </div>
+     {/* Add an image on the right */}
+     <div className={styles.imageContainer}>
+        <Image src={YourImage} alt="Your Image"  className={styles.image} />
+      </div>
+    </div>
   );
-};
+}
 
-export default SignUp;
+ export default SignUp;

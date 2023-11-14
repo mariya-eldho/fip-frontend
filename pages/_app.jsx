@@ -8,7 +8,8 @@ import { store } from "../store";
 
 function MyApp({ Component, pageProps }) {
   return (
-    <Theme theme="g90">
+
+    <Theme theme="white">
       <Provider store={store}>
         <ProtectedRoute>
           <NavBar />
