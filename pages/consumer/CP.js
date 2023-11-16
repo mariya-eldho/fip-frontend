@@ -9,16 +9,14 @@ import { useSelector, useDispatch } from 'react-redux';
 
 
 function WithInteractiveItemsAndActions() {
-  const onClick = action("onClick (ContainedListItem)");
+  
+  console.log("Cartitems");
+
+  const dispatch = useDispatch();
+  //const cartItems = useSelector((state) => state.cartItems);
+  const onClick = action('onClick (ContainedListItem)');
   //const { dishId, dishName, dishPrice } = router.query;
-  const itemAction = (
-    <Button
-      kind="ghost"
-      iconDescription="Dismiss"
-      hasIconOnly
-      renderIcon={Close}
-    />
-  );
+  const itemAction = <Button kind="ghost" iconDescription="Dismiss" hasIconOnly renderIcon={Close} />;
 
   // Create an array of quantities, one for each item
   const initialQuantities = [1];
@@ -59,12 +57,12 @@ function WithInteractiveItemsAndActions() {
 
   useEffect(() => {
     // Extract dish details from the router query
-    const {
-      dishId,
-      dishName,
-      dishPrice,
-      cartItems: cartItemsQuery,
-    } = router.query;
+    setCartItems((prevItems) => [...prevItems, cartItems]);
+    const { dishId, dishName, dishPrice, cartItems: cartItemsQuery } = router.query;
+    
+    console.log("hi");
+    console.log(cartItemsQuery);
+   
 
     // Parse cartItems from the query string
     const parsedCartItems = cartItemsQuery ? JSON.parse(cartItemsQuery) : [];
@@ -87,7 +85,12 @@ function WithInteractiveItemsAndActions() {
     setQuantities(new Array(parsedCartItems.length).fill(1));
     const s = localStorage.setItem("cart",cartItemsQuery);
     // Handle other details like dishId, dishName, dishPrice as needed
-    console.log("Dish Details:", { dishId, dishName, dishPrice });
+    console.log('Dish Details:', cartItemsQuery);
+   
+  
+      // Navigate to the cart page
+      
+    
   }, [router.query]);
 
 
@@ -95,45 +98,59 @@ function WithInteractiveItemsAndActions() {
    // setCartItems((prevItems) => [...prevItems, cartItems]);
     const isCartEmpty = cartItems.length === 0;
     if (isCartEmpty) {
-      alert(
-        "Your cart is empty. Please add items to your cart before confirming the order."
-      );
+      alert('Your cart is empty. Please add items to your cart before confirming the order.');
       return;
     }
+  
+      router.push({
+        pathname: "/consumer/vo",
+        query: {
+          cartItems: JSON.stringify(cartItems),
+          quantities: quantities,
+          price : quantities * {dishPrice},
+        },
+      });
 
-    router.push("./order-confirm");
   };
 
   const handleGoBackToOrderPage = () => {
-    router.push("/consumer");
+   // localStorage.getItem('cartItems');
+   localStorage.setItem('cartItems', JSON.stringify(cartItems))
+    //localStorage.getItem('s');
+    router.push({
+      pathname: "/consumer",
+      query: {
+        cartItems: JSON.stringify(cartItems),
+        quantities: quantities,
+      },
+    });
+    console.log(cartItems)
+ 
   };
+
+  
+  
 
   const renderCartItems = () => {
     return cartItems.map((item, index) => (
       <ContainedListItem key={item.id} action={itemAction}>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <span>{item.name}</span>
           <div style={{ display: "flex", alignItems: "center" }}>
-            {quantities[index] > 1 && (
-              <Button onClick={() => decreaseQuantity(index)}>-</Button>
-            )}
-            <Button onClick={() => increaseQuantity(index)}>+</Button>
-            <span style={{ margin: "0 0.5rem" }}>
-              Quantity: {quantities[index]}
-            </span>
 
+            {quantities[index] > 1 && <Button onClick={() => decreaseQuantity(index)}>-</Button>}
+            <Button onClick={() => increaseQuantity(index)}>+</Button>
+            <span style={{ margin: "0 0.5rem" }}>Quantity: {quantities[index]}</span>
+            
             <Button onClick={() => removeCartItem(index)}>Remove</Button>
           </div>
         </div>
       </ContainedListItem>
     ));
   };
+  
+  
+  
 
   const { dishId, dishName, dishPrice } = router.query;
 
@@ -142,22 +159,16 @@ function WithInteractiveItemsAndActions() {
       style={{
         display: "flex",
         flexDirection: "column",
-        height: "100vh",
+        height: "100%",
         width: "80%",
         margin: "auto",
         padding: "90px",
       }}
     >
-      <ContainedList label="Cart Items" kind="on-page" action={""}>
+      <ContainedList label="Cart Items" kind="on-page" action={''}>
         {renderCartItems()}
       </ContainedList>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          marginTop: "20px",
-        }}
-      >
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
         <Button onClick={handleGoBackToOrderPage}>Go Back to Order Page</Button>
         <Button onClick={handleConfirmOrder}>Confirm Order  </Button>
      
