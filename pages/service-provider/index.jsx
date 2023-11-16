@@ -9,7 +9,7 @@ import AnalyticsTable from "../../components/AnalyticsTable";
 const Home = () => {
   const router = useRouter();
   const { user, loadingUser } = useSelector((state) => state.userAuth);
-  const [date, setDate] = useState(null);
+  const [date, setDate] = useState(new Date());
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -22,10 +22,6 @@ const Home = () => {
     }
   }, [user, loadingUser]);
 
-  const handleLogout = async () => {
-    await dispatch(signOut());
-    router.push("/");
-  };
   return (
     <div
       style={{
@@ -39,6 +35,7 @@ const Home = () => {
     >
       <DatePicker
         datePickerType="single"
+        value={date}
         onChange={function noRefCheck(e) {
           console.log(e);
           setDate(new Date(e));
@@ -65,9 +62,9 @@ const Home = () => {
           Congratulations {user?.email}! You are logged in as a Service Provider
         </div>
       )} */}
-      <Button onClick={handleLogout} style={{ marginTop: "20px" }}>
+      {/* <Button onClick={handleLogout} style={{ marginTop: "20px" }}>
         Sign Out
-      </Button>
+      </Button> */}
     </div>
   );
 };

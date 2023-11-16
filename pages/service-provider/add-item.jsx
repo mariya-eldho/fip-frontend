@@ -26,7 +26,7 @@ const AddItem = () => {
     setLoading(true);
     e.preventDefault();
     try {
-      const response = await fetch("http://127.0.0.1:5001/add_food", {
+      const response = await fetch("http://127.0.0.1:5000/add_food", {
         method: "POST", // You can use other HTTP methods like GET, PUT, DELETE, etc.
         headers: {
           "Content-Type": "application/json", // Specify the content type if you're sending JSON data
