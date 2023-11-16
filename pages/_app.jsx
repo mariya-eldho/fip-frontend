@@ -1,5 +1,6 @@
 import "../styles/globals.scss";
 import { Theme } from "@carbon/react";
+//mport { CartProvider } from '../components/CartContext';
 
 import NavBar from "../components/Navbar";
 import ProtectedRoute from "../lib/firebase/auth";
@@ -8,13 +9,12 @@ import { store } from "../store";
 
 function MyApp({ Component, pageProps }) {
   return (
-
     <Theme theme="white">
       <Provider store={store}>
         <ProtectedRoute>
           <NavBar />
           <Component {...pageProps} />
-        </ProtectedRoute>
+        </ProtectedRoute>        
       </Provider>
     </Theme>
   );

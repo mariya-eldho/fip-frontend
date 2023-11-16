@@ -26,26 +26,28 @@ const Home = () => {
     router.push("/");
   };
   return (
-    <Theme theme="g10">
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          height: "100%",
-          width: "80%",
-          margin: "auto",
-          padding: "90px",
-        }}
-      >
-        <Orders />
-        {loadingUser && <p>Loading...</p>}
-        {user && (
-          <div style={{ marginTop: "20px" }}>
-            <Button onClick={handleLogout}>Sign Out</Button>
-          </div>
-        )}
-      </div>
-    </Theme>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        height: "100%",
+        width: "80%",
+        margin: "auto",
+        padding: "90px",
+      }}
+    >
+      <Orders />
+      {loadingUser && <p>Loading...</p>}
+      {user && (
+        <div style={{paddingTop: "10%",}}> 
+          <Button onClick={handleLogout}>
+            Sign Out
+          </Button>
+        </div>
+      )}
+     
+    </div>
+
   );
 };
 

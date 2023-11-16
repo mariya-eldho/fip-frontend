@@ -3,8 +3,17 @@ import { useRouter } from "next/router";
 import { ContainedList, ContainedListItem, Button } from "@carbon/react";
 import { Close20 as Close } from "@carbon/icons-react";
 import { action } from "@storybook/addon-actions";
+import { useSelector, useDispatch } from 'react-redux';
+
+
+
 
 function WithInteractiveItemsAndActions() {
+  
+  console.log("Cartitems");
+
+  const dispatch = useDispatch();
+  //const cartItems = useSelector((state) => state.cartItems);
   const onClick = action('onClick (ContainedListItem)');
   //const { dishId, dishName, dishPrice } = router.query;
   const itemAction = <Button kind="ghost" iconDescription="Dismiss" hasIconOnly renderIcon={Close} />;
@@ -13,6 +22,10 @@ function WithInteractiveItemsAndActions() {
   const initialQuantities = [1];
   const [quantities, setQuantities] = useState([initialQuantities]);
   const [cartItems, setCartItems] = useState([]);
+  const [queryParamNotAdded, setQueryParamNotAdded] = useState(true)
+  const [allItemsAdded, setAllItemsAdded] = useState(false);
+  
+  console.log(cartItems);
 
   const increaseQuantity = (index) => {
     const newQuantities = [...quantities];
@@ -39,38 +52,84 @@ function WithInteractiveItemsAndActions() {
   };
 
   const router = useRouter();
+
+  //const history = useNavigate();
+
   useEffect(() => {
     // Extract dish details from the router query
+    setCartItems((prevItems) => [...prevItems, cartItems]);
     const { dishId, dishName, dishPrice, cartItems: cartItemsQuery } = router.query;
+    
+    console.log("hi");
+    console.log(cartItemsQuery);
+   
 
     // Parse cartItems from the query string
     const parsedCartItems = cartItemsQuery ? JSON.parse(cartItemsQuery) : [];
 
+    console.log("hiii");
+    console.log(parsedCartItems);
+    
     // Update the component state with the new cart items
-    setCartItems(parsedCartItems);
+    //setCartItems(parsedCartItems);
+    if(queryParamNotAdded) {
+      setCartItems((prevItems) => [...prevItems, ...parsedCartItems]);
+      setQueryParamNotAdded(true);
+    }
+    
+
+    console.log("Hiiiiiii");
+    console.log(setCartItems(parsedCartItems));
 
     // Update the quantities state based on the length of cart items
     setQuantities(new Array(parsedCartItems.length).fill(1));
-
+    const s = localStorage.setItem("cart",cartItemsQuery);
     // Handle other details like dishId, dishName, dishPrice as needed
-    console.log('Dish Details:', { dishId, dishName, dishPrice });
+    console.log('Dish Details:', cartItemsQuery);
+   
+  
+      // Navigate to the cart page
+      
+    
   }, [router.query]);
 
-  const handleConfirmOrder = () => {
-    const isCartEmpty = cartItems.length === 0;
 
+  const handleConfirmOrder = () => {
+   // setCartItems((prevItems) => [...prevItems, cartItems]);
+    const isCartEmpty = cartItems.length === 0;
     if (isCartEmpty) {
       alert('Your cart is empty. Please add items to your cart before confirming the order.');
       return;
     }
   
-    router.push("./order-confirm");
+      router.push({
+        pathname: "/consumer/vo",
+        query: {
+          cartItems: JSON.stringify(cartItems),
+          quantities: quantities,
+          price : quantities * {dishPrice},
+        },
+      });
+
   };
 
   const handleGoBackToOrderPage = () => {
-    
-    router.push("/consumer");
+   // localStorage.getItem('cartItems');
+   localStorage.setItem('cartItems', JSON.stringify(cartItems))
+    //localStorage.getItem('s');
+    router.push({
+      pathname: "/consumer",
+      query: {
+        cartItems: JSON.stringify(cartItems),
+        quantities: quantities,
+      },
+    });
+    console.log(cartItems)
+ 
   };
+
+  
+  
 
   const renderCartItems = () => {
     return cartItems.map((item, index) => (
@@ -111,7 +170,9 @@ function WithInteractiveItemsAndActions() {
       </ContainedList>
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <Button onClick={handleGoBackToOrderPage}>Go Back to Order Page</Button>
-        <Button onClick={handleConfirmOrder}>Confirm Order</Button>
+        <Button onClick={handleConfirmOrder}>Confirm Order  </Button>
+     
+
       </div>
     </div>
   );

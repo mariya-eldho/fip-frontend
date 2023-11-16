@@ -16,9 +16,10 @@ import {
 
 
 
+
+
 const NavBar = () => {
   return (
-
     <div style={{
       display: "flex",
       alignItems: "center",
@@ -51,7 +52,6 @@ const NavBar = () => {
         </HeaderGlobalBar>
       </Header>
     </div>
-
   );
 };
 
