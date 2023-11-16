@@ -26,6 +26,7 @@ function BatchExpansion() {
   const addToCart = (dish) => {
     const { id, name, price } = dish;
     const newDish = { id, name, price };
+    console.log('Adding to cart' , dish);
 
     // Check if the item has already been added to the cart
     if (!addedToCart[id]) {
@@ -41,7 +42,11 @@ function BatchExpansion() {
       }, 2000);
     }
   };
-  
+  useEffect(() => {
+    // Save cartItems to local storage when it changes
+    localStorage.setItem("cartItems", JSON.stringify(cartItems));
+  }, [cartItems]);
+
 
   useEffect(() => {
     if (allItemsAdded) {

@@ -68,6 +68,7 @@ function WithInteractiveItemsAndActions() {
   };
 
   const handleGoBackToOrderPage = () => {
+    
     router.push("/consumer");
   };
 
