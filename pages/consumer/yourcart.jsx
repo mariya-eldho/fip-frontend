@@ -1,15 +1,19 @@
-import { useRouter } from 'next/router';
+import CartPage from "./CP";
 
-const YourCartPage = () => {
-  const router = useRouter();
-  const { dishId, dishName, dishPrice } = router.query;
+function Cart() {
 
-  // Now you have access to dish information in the component
-  console.log('Dish ID:', dishId);
-  console.log('Dish Name:', dishName);
-  console.log('Dish Price:', dishPrice);
-
-  // Rest of your "/consumer/yourcart" page logic
+  return(
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        height: "100vh",
+      }}
+    >
+        <CartPage />
+        </div>
+  ); 
 };
-
-export default YourCartPage;
+ export default Cart;
