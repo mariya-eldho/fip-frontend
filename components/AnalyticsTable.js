@@ -134,14 +134,14 @@ function AnalyticsTable({ date }) {
 
   const fetchData = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:5001/expected_order", {
+      const response = await fetch("http://127.0.0.1:5000/expected_order", {
         method: "POST", // You can use other HTTP methods like GET, PUT, DELETE, etc.
         headers: {
           "Content-Type": "application/json", // Specify the content type if you're sending JSON data
           // Additional headers can be added here
         },
         body: JSON.stringify({
-          date: "[Tue Nov 07 2023 00:00:00 GMT+0530 (India Standard Time)]",
+          date: date ? `[${date}]` : `[${new Date()}]`,
           // Add any other data you want to include in the request body
         }),
       });
@@ -181,7 +181,7 @@ function AnalyticsTable({ date }) {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [date]);
 
   return (
     <DataTable

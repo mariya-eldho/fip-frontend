@@ -12,6 +12,23 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
+function getNextDates(length) {
+  let currentDate = new Date();
+  let dates = [];
+
+  for (let i = 0; i < length; i++) {
+    currentDate.setDate(currentDate.getDate() + 1);
+    // Format the date as "mmm dd"
+    const formattedDate = currentDate.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+    });
+    dates.push(formattedDate);
+  }
+
+  return dates;
+}
+
 export default function Page() {
   const router = useRouter();
   const [data, setData] = useState([]);
@@ -27,7 +44,7 @@ export default function Page() {
 
   const fetchData = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:5001/analytics", {
+      const response = await fetch("http://127.0.0.1:5000/analytics", {
         method: "POST", // You can use other HTTP methods like GET, PUT, DELETE, etc.
         headers: {
           "Content-Type": "application/json", // Specify the content type if you're sending JSON data
@@ -44,11 +61,14 @@ export default function Page() {
       }
 
       const result = await response.json();
+      const dates = getNextDates(result.Quantity.length);
+      console.log(dates);
       setData(
         result.Quantity.map((item, i) => ({
           name: router.query.dish,
           orders: Math.floor(item),
           amt: 2400,
+          date: dates[i],
         }))
       );
       console.log(result);
@@ -75,7 +95,7 @@ export default function Page() {
     >
       <ResponsiveContainer width="60%" height="60%">
         <BarChart data={data}>
-          <XAxis dataKey="day" stroke="#0f62fe" />
+          <XAxis dataKey="date" stroke="#0f62fe" />
           <YAxis />
           <Tooltip
             wrapperStyle={{
@@ -98,7 +118,7 @@ export default function Page() {
           <Bar dataKey="orders" fill="#0f62fe" barSize={30} />
         </BarChart>
       </ResponsiveContainer>
-      {router.query.dish}
+      <h3>{router.query.dish}</h3>
     </div>
   );
 }
