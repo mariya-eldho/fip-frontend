@@ -211,7 +211,7 @@ function AnalyticsTable({ date }) {
                 }}
                 kind="primary"
               >
-                Add new
+                + Add new Dish
               </Button>
             </TableToolbarContent>
           </TableToolbar>

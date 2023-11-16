@@ -26,7 +26,7 @@ const Home = () => {
     router.push("/");
   };
   return (
-    <Theme theme="g10">
+    <Theme theme="g90">
       <div
         style={{
           display: "flex",
