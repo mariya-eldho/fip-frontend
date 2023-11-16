@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { Button, DatePicker, DatePickerInput } from "carbon-components-react";
 import Table from "../../components/DataTable";
@@ -9,6 +9,7 @@ import AnalyticsTable from "../../components/AnalyticsTable";
 const Home = () => {
   const router = useRouter();
   const { user, loadingUser } = useSelector((state) => state.userAuth);
+  const [date, setDate] = useState(null);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -40,7 +41,7 @@ const Home = () => {
         datePickerType="single"
         onChange={function noRefCheck(e) {
           console.log(e);
-          console.log(new Date(e));
+          setDate(new Date(e));
         }}
         onClose={function noRefCheck() {}}
         onOpen={function noRefCheck() {}}
@@ -56,7 +57,7 @@ const Home = () => {
           placeholder="mm/dd/yyyy"
         />
       </DatePicker>
-      <AnalyticsTable />
+      <AnalyticsTable date={date} />
       {/* <Table /> */}
       {/* {loadingUser && <p>Loading...</p>}
       {user && (
