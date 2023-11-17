@@ -12,14 +12,14 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-function getNextDates(length) {
-  let currentDate = new Date();
+function getNextDates(length, date) {
   let dates = [];
+  const selectedDate = new Date(date);
 
   for (let i = 0; i < length; i++) {
-    currentDate.setDate(currentDate.getDate() + 1);
-    // Format the date as "mmm dd"
-    const formattedDate = currentDate.toLocaleDateString("en-US", {
+    selectedDate.setDate(selectedDate.getDate() + 1);
+    // Format the selectedDate as "mmm dd"
+    const formattedDate = selectedDate.toLocaleDateString("en-US", {
       month: "short",
       day: "numeric",
     });
@@ -32,7 +32,6 @@ function getNextDates(length) {
 export default function Page() {
   const router = useRouter();
   const [data, setData] = useState([]);
-
   // const data = [
   //   { name: router.query.dish, orders: 400, pv: 2400, amt: 2400 },
   //   { name: router.query.dish, orders: 400, pv: 2400, amt: 2400 },
@@ -61,7 +60,7 @@ export default function Page() {
       }
 
       const result = await response.json();
-      const dates = getNextDates(result.Quantity.length);
+      const dates = getNextDates(result.Quantity.length, router.query.date);
       console.log(dates);
       setData(
         result.Quantity.map((item, i) => ({
@@ -78,7 +77,7 @@ export default function Page() {
   };
 
   useEffect(() => {
-    if (router.query) {
+    if (router.query.date) {
       fetchData();
     }
   }, [router.query]);

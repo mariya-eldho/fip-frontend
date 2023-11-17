@@ -162,7 +162,7 @@ function AnalyticsTable({ date }) {
           status: (
             <div style={{ padding: "1rem", textAlign: "center" }}>
               {" "}
-              <Link href={`/service-provider/${key}`}>
+              <Link href={`/service-provider/${key}?date=${date}`}>
                 <Button style={{ backgroundColor: "#0f62fe" }}>
                   Go To Analytics
                 </Button>{" "}
