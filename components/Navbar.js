@@ -17,11 +17,12 @@ import {
 } from "@carbon/icons-react";
 import { useDispatch, useSelector } from "react-redux";
 import { signOut } from "../store/slices/authSlice";
+import { useRouter } from "next/router";
 
 const NavBar = () => {
   const { user, loadingUser } = useSelector((state) => state.userAuth);
   const dispatch = useDispatch();
-
+  const router = useRouter();
   const handleLogout = async () => {
     await dispatch(signOut());
     router.push("/");

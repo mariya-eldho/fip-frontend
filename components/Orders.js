@@ -33,6 +33,7 @@ function BatchExpansion() {
 
     // Create a new object with extracted information
     const newDish = { id, name, price };
+    console.log("Adding to cart", dish);
 
     // Update the local state with the new item
     setCartItems((prevItems) => [...prevItems, newDish]);
@@ -40,31 +41,10 @@ function BatchExpansion() {
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch("http://127.0.0.1:5000/list_food");
-          
-          
-       
-      
-        if (!response.ok) {
-          throw new Error("Network request failed");
-        }
-        const result = await response.json();
-        const ids = result.map(item => item.id);
-        console.log(ids);
-        console.log(result);
-      }
-      catch (e) {
-        console.log(e);
-      }
+    // Save cartItems to local storage when it changes
+    localStorage.setItem("cartItems", JSON.stringify(cartItems));
+  }, [cartItems]);
 
-    }
-
-    fetchData();
-  });
-
-  // Use useEffect to navigate after the state has been updated
   useEffect(() => {
     // Extract dish details from the router query
     const { dishId, dishName, dishPrice, cartItems: cartItemsQuery } = router.query;
@@ -151,66 +131,108 @@ function BatchExpansion() {
     },
   ];
 
-  
-
   return (
-    <div style={{
-      display: "flex",
-      flexDirection: "column",
-      height: "100%",
-      width: "80%",
-      margin: "auto",
-      padding: "90px",
-    }}>
-      <DataTable rows={rows} headers={headers} render={({ rows, headers, getHeaderProps, getExpandHeaderProps, getRowProps, getExpandedRowProps, getTableProps, getTableContainerProps }) => (
-        <div style={{
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          height: "100vh",
-        }}>
-          <Theme theme="g10" >
-            <TableContainer title="Order your Favourite Food" description="" {...getTableContainerProps()} >
-              <Table {...getTableProps()} aria-label="sample table"  >
-                <TableHead>
-                  <TableRow >
-                    <TableExpandHeader  enableToggle={true} {...getExpandHeaderProps()} />
-                    {headers.map((header, i) => <TableHeader key={i} {...getHeaderProps({
-                      header
-                    })}>
-                      {header.header}
-                    </TableHeader>)}
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {rows.map(row => <React.Fragment key={row.id}>
-                    <TableExpandRow {...getRowProps({
-                      row
-                    })} >
-                      {row.cells.map(cell => <TableCell key={cell.id}>{cell.value}</TableCell>)}
-                    </TableExpandRow>
-                    <TableExpandedRow colSpan={headers.length + 1} className="demo-expanded-td" {...getExpandedRowProps({
-                      row
-                    })}>
-                      <h6>About the dish</h6>
-                      <div>Lorem Ipsum is simply dummy text </div> <br></br>
-                    </TableExpandedRow>
-                  </React.Fragment>)}
-                </TableBody>
-              </Table>
-            </TableContainer>
-            <div style={{
-              width: '800px',
-              padding: '1rem',
-            }}>
-              <Button onClick={handleGoToCart}>Go to Cart</Button>
-            </div>
-          </Theme>
-        </div>
-      )} />
-  </div>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        height: "100%",
+        width: "80%",
+        margin: "auto",
+        padding: "90px",
+      }}
+    >
+      {/* {successMessage && (
+        <div className="success-message">{successMessage}</div>
+      )} */}
+      <DataTable
+        rows={rows}
+        headers={headers}
+        render={({
+          rows,
+          headers,
+          getHeaderProps,
+          getExpandHeaderProps,
+          getRowProps,
+          getExpandedRowProps,
+          getTableProps,
+          getTableContainerProps,
+        }) => (
+          <div
+            style={{
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              height: "100vh",
+            }}
+          >
+            <Theme theme="g90">
+              <TableContainer
+                title="Order your Favourite Food"
+                description=""
+                {...getTableContainerProps()}
+              >
+                <Table {...getTableProps()} aria-label="sample table">
+                  <TableHead>
+                    <TableRow>
+                      <TableExpandHeader
+                        enableToggle={true}
+                        {...getExpandHeaderProps()}
+                      />
+                      {headers.map((header, i) => (
+                        <TableHeader
+                          key={i}
+                          {...getHeaderProps({
+                            header,
+                          })}
+                        >
+                          {header.header}
+                        </TableHeader>
+                      ))}
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {rows.map((row) => (
+                      <React.Fragment key={row.id}>
+                        <TableExpandRow
+                          {...getRowProps({
+                            row,
+                          })}
+                        >
+                          {row.cells.map((cell) => (
+                            <TableCell key={cell.id}>{cell.value}</TableCell>
+                          ))}
+                        </TableExpandRow>
+                        <TableExpandedRow
+                          colSpan={headers.length + 1}
+                          className="demo-expanded-td"
+                          {...getExpandedRowProps({
+                            row,
+                          })}
+                        >
+                          <h6>About the dish</h6>
+                          <div>Lorem Ipsum is simply dummy text </div> <br></br>
+                        </TableExpandedRow>
+                      </React.Fragment>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+              <div
+                style={{
+                  width: "800px",
+                  paddingTop: "1rem",
+                }}
+              >
+                <Button onClick={handleGoToCart}>Go to Cart</Button>
+              </div>
+            </Theme>
+          </div>
+        )}
+      />
+    </div>
   );
-          } 
+}
 
 export default BatchExpansion;
 
