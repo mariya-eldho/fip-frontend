@@ -13,27 +13,61 @@ const centeredStyle = {
 const OrderConfirmation = () => {
   const [isRedirecting, setIsRedirecting] = useState(false);
   const router = useRouter();
+  const [cartItems, setCartItems] = useState([]);
+  const [quantities, setQuantities] = useState([]);
+  const [price, setPrice] = useState([]);
+  const [queryParamNotAdded, setQueryParamNotAdded] = useState(true);
 
   useEffect(() => {
+    // Redirect after a delay
     const timeoutId = setTimeout(() => {
       console.log('Redirecting...');
       setIsRedirecting(true);
-      router.push("/consumer");
+
+      // Pass cartItems, quantities, and price as query parameters to vo page
+      router.push({
+        pathname: "/consumer/vo",
+        query: {
+          cartItems: JSON.stringify(cartItems),
+          quantities: JSON.stringify(quantities),
+          price: price,
+        },
+      });
     }, 2000);
-  
+
     return () => clearTimeout(timeoutId);
-  }, [router]);
+  }, [router.query]);
+
+  // Other code...
 
   return (
     <div style={centeredStyle}>
       <CheckmarkOutline size={48} />
-      {isRedirecting ? (
-        <p>Redirecting...</p>
-      ) : (
-        <p>Your order has been placed successfully!</p>
-      )}
+      {isRedirecting ? (<p>Redirecting...</p>) : (<p>Your order has been placed successfully!</p>)}
     </div>
   );
 };
 
 export default OrderConfirmation;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

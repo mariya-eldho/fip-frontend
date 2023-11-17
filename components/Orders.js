@@ -15,53 +15,69 @@ import {
   Button,
   Theme,
 } from "@carbon/react";
+import { async } from "@firebase/util";
 
 function BatchExpansion() {
   const router = useRouter();
   const [cartItems, setCartItems] = useState([]);
-  const [addedToCart, setAddedToCart] = useState({});
   const [allItemsAdded, setAllItemsAdded] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [queryParamNotAdded, setQueryParamNotAdded] = useState(true)
+  const [quantities, setQuantities] = useState([]);
+  const [addedToCart, setAddedToCart] = useState({});
+
 
   const addToCart = (dish) => {
-    const { id, name, price } = dish;
-    const newDish = { id, name, price };
-    console.log("Adding to cart", dish);
+    console.log('Adding to Cart:', dish);
 
-    // Check if the item has already been added to the cart
+    // Extract necessary information from dish
+    const { id, name, price } = dish;
+
+    // Create a new object with extracted information
+    const newDish = { id, name, price };
+    const newQ = {quantities};
     if (!addedToCart[id]) {
       setCartItems((prevItems) => [...prevItems, newDish]);
       setAddedToCart((prevAdded) => ({ ...prevAdded, [id]: true }));
-
-      // Set the success message
-      setSuccessMessage(`${name} added to cart!`);
-
-      // Clear the message after a short delay
-      setTimeout(() => {
-        setSuccessMessage("");
-      }, 2000);
     }
   };
+
+  
+
   useEffect(() => {
     // Save cartItems to local storage when it changes
     localStorage.setItem("cartItems", JSON.stringify(cartItems));
   }, [cartItems]);
 
   useEffect(() => {
+    // Extract dish details from the router query
+    const { dishId, dishName, dishPrice, cartItems: cartItemsQuery } = router.query;
+    console.log("hi");
+    console.log(cartItemsQuery);
+    // Parse cartItems from the query string
+    const parsedCartItems = cartItemsQuery ? JSON.parse(cartItemsQuery) : [];
+    console.log("parsedCartItems")
+    console.log(parsedCartItems)
+    if(queryParamNotAdded) {
+    setCartItems((prevItems) => [...prevItems, ...parsedCartItems]);
+    setQueryParamNotAdded(true);
+    }
+    // Check if all items have been added
     if (allItemsAdded) {
       // Navigate to the cart page
       router.push({
         pathname: "/consumer/CP",
         query: {
           cartItems: JSON.stringify(cartItems),
+          quantities: quantities,
         },
       });
     }
-  }, [allItemsAdded, router, cartItems]);
+  }, [allItemsAdded, router]);
 
   const handleGoToCart = () => {
     // Set the allItemsAdded state to true
     setAllItemsAdded(true);
+    localStorage.setItem('cartItems', JSON.stringify(cartItems));
   };
 
   const rows = [
@@ -183,15 +199,13 @@ function BatchExpansion() {
       style={{
         display: "flex",
         flexDirection: "column",
-        height: "100%",
-        width: "80%",
+        height: "100vh",
+        width: "100%",
         margin: "auto",
         padding: "90px",
       }}
     >
-      {/* {successMessage && (
-        <div className="success-message">{successMessage}</div>
-      )} */}
+      
       <DataTable
         rows={rows}
         headers={headers}
@@ -213,7 +227,7 @@ function BatchExpansion() {
               height: "100vh",
             }}
           >
-            <Theme theme="g90">
+          
               <TableContainer
                 title="Order your Favourite Food"
                 description=""
@@ -271,9 +285,9 @@ function BatchExpansion() {
                   paddingTop: "1rem",
                 }}
               >
-                <Button onClick={handleGoToCart}>Go to Cart</Button>
+                <Button onClick={handleGoToCart} style={{ backgroundColor: "#640aa8", }}>Go to Cart</Button>
               </div>
-            </Theme>
+
           </div>
         )}
       />
@@ -282,3 +296,5 @@ function BatchExpansion() {
 }
 
 export default BatchExpansion;
+
+

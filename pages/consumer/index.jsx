@@ -26,7 +26,7 @@ const Home = () => {
     router.push("/");
   };
   return (
-    <Theme theme="g90">
+    <Theme theme="white">
       <div
         style={{
           display: "flex",
@@ -34,16 +34,11 @@ const Home = () => {
           height: "100%",
           width: "80%",
           margin: "auto",
-          padding: "90px",
+          
         }}
       >
         <Orders />
-        {loadingUser && <p>Loading...</p>}
-        {user && (
-          <div style={{ marginTop: "20px" }}>
-            <Button onClick={handleLogout}>Sign Out</Button>
-          </div>
-        )}
+        
       </div>
     </Theme>
   );
