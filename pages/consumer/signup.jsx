@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import Image from "next/image";
 import { Form, TextInput, Button } from "carbon-components-react";
 import { useDispatch, useSelector } from "react-redux";
+import { Theme } from "@carbon/react";
 import {
   registerWithEmail,
   signinWithGoogle,
@@ -38,7 +39,9 @@ const SignUp = () => {
     router.push("/consumer");
   };
   return (
-    <div className={styles.loginPageContainer}>
+    <div>
+      <Theme theme="white">
+      <div className={styles.loginPageContainer}>
       {/* Move the login form to the left */}
       <div className={styles.loginForm}>
       <div className={styles.loginHeading}>
@@ -94,7 +97,10 @@ const SignUp = () => {
         <Image src={YourImage} alt="Your Image"  className={styles.image} />
       </div>
     </div>
-  );
+
+      </Theme>
+    </div>
+      );
 }
 
  export default SignUp;

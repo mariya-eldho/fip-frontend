@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import { ContainedList, ContainedListItem, Button } from "@carbon/react";
+import { ContainedList, ContainedListItem, Button, Theme } from "@carbon/react";
 import { Close20 as Close } from "@carbon/icons-react";
 import { action } from "@storybook/addon-actions";
 import Ord from './order-confirm';
@@ -93,7 +93,9 @@ function WithInteractiveItemsAndActions() {
 //     console.log('Dish Details:', { dishId, dishName, dishPrice });
 //   }, [router.query]);
   
-  
+  const goToHome = () => {
+    router.push('/consumer');
+  }
 
 
   
@@ -103,13 +105,13 @@ function WithInteractiveItemsAndActions() {
     return cartItems.map((item, index) => (
       
       <ContainedListItem key={item.id} action={itemAction}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", margin: "1%", }}>
           <span>{item.name}</span>
           <div style={{ display: "flex", alignItems: "center" }}>
 
           
-           <span style={{ margin: "0 0.5rem" }}> Quantity: {quantities[index]}</span> 
-            <span>Price : { [quantities[index]*item.price] }</span>
+           <span style={{ margin: "0 0.5rem" }}> Quantity: {quantities[index]}</span>
+            <span style={{ margin: "0 0.5rem" }}>Price : { [quantities[index]*item.price] }</span>
             
           </div>
         </div>
@@ -133,8 +135,9 @@ function WithInteractiveItemsAndActions() {
 //       }
 //     }, []);
   return (
-    
-    <div
+    <div>
+      <Theme theme="white">
+      <div
       style={{
         display: "flex",
         flexDirection: "column",
@@ -144,14 +147,21 @@ function WithInteractiveItemsAndActions() {
         padding: "90px",
       }}
     >
-      {/* {hasRendered ? (<div> <Ord /></div>) : null} */}
-      <ContainedList label="Cart Items" kind="on-page" action={''}>
+      <Theme theme="g10">
+        {/* {hasRendered ? (<div> <Ord /></div>) : null} */}
+      <ContainedList label="Your Cart" kind="on-page" action={''} >
       
-        {renderCartItems()}
+      {renderCartItems()}
+     
+       </ContainedList>
        
-      </ContainedList>
+      </Theme>
+      <Button onClick={goToHome} style={{ backgroundColor: "#640aa8", marginTop: "2%", paddingLeft: "5%" }}>Home</Button>
       
     </div>
+      </Theme>
+    </div>
+    
   );
 }
 

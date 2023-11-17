@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import { ContainedList, ContainedListItem, Button } from "@carbon/react";
+import { ContainedList, ContainedListItem, Button, Theme } from "@carbon/react";
 import { Close20 as Close } from "@carbon/icons-react";
+
 import { action } from "@storybook/addon-actions";
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -101,7 +102,9 @@ function WithInteractiveItemsAndActions() {
       alert('Your cart is empty. Please add items to your cart before confirming the order.');
       return;
     }
-  
+    else{
+      //router.push('/consumer/order-confirm');
+      alert('Your order placed successfully !');
       router.push({
         pathname: "/consumer/vo",
         query: {
@@ -110,6 +113,9 @@ function WithInteractiveItemsAndActions() {
           price : quantities * {dishPrice},
         },
       });
+     
+    }
+      
 
   };
 
@@ -134,20 +140,60 @@ function WithInteractiveItemsAndActions() {
   const renderCartItems = () => {
     return cartItems.map((item, index) => (
       <ContainedListItem key={item.id} action={itemAction}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginLeft: "3%", }}>
           <span>{item.name}</span>
           <div style={{ display: "flex", alignItems: "center" }}>
-
-            {quantities[index] > 1 && <Button onClick={() => decreaseQuantity(index)}>-</Button>}
-            <Button onClick={() => increaseQuantity(index)}>+</Button>
-            <span style={{ margin: "0 0.5rem" }}>Quantity: {quantities[index]}</span>
-            
-            <Button onClick={() => removeCartItem(index)}>Remove</Button>
+  
+            {quantities[index] > 1 && <Button onClick={() => decreaseQuantity(index)} style={decreaseButtonStyle}>-</Button>}
+            <Button onClick={() => increaseQuantity(index)} style={increaseButtonStyle}>+</Button>
+            <span style={{ margin: "0 0.5rem", fontWeight: "bold" }}>Quantity: {quantities[index]}</span>
+  
+            <Button onClick={() => removeCartItem(index)} style={removeButtonStyle}>Remove</Button>
           </div>
         </div>
       </ContainedListItem>
     ));
   };
+  
+  const baseButtonStyle = {
+    cursor: "pointer",
+    padding: "12px",
+    borderRadius: "1px",
+    fontWeight: "bold",
+    transition: "background-color 0.3s",
+  };
+  
+  const decreaseButtonStyle = {
+    ...baseButtonStyle,
+    backgroundColor: "#ffffff",
+    color: "black",
+  };
+  
+  const increaseButtonStyle = {
+    ...baseButtonStyle,
+    backgroundColor: "#ffffff",
+    color: "black",
+  };
+  
+  const removeButtonStyle = {
+    cursor: "pointer",
+    padding: "12px",
+    borderRadius: "4px",
+    backgroundColor: "#640aa8",
+    color: "white",
+  };
+
+  const ButtonStyle = {
+    cursor: "pointer",
+    padding: "12px",
+    borderRadius: "4px",
+    marginLeft : "3%",
+    marginRight: "5%",
+    backgroundColor: "#640aa8",
+    color: "white",
+  };
+  
+  // ... (rest of your component code)
   
   
   
@@ -155,26 +201,35 @@ function WithInteractiveItemsAndActions() {
   const { dishId, dishName, dishPrice } = router.query;
 
   return (
-    <div
+    <div>
+      <Theme theme="white">
+      <div
       style={{
         display: "flex",
         flexDirection: "column",
-        height: "100%",
+        height: "100vh",
         width: "80%",
         margin: "auto",
         padding: "90px",
       }}
     >
-      <ContainedList label="Cart Items" kind="on-page" action={''}>
+      <Theme theme="g10">
+      <ContainedList label="Yours Orders" kind="on-page" action={''}>
         {renderCartItems()}
       </ContainedList>
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <Button onClick={handleGoBackToOrderPage}>Go Back to Order Page</Button>
-        <Button onClick={handleConfirmOrder}>Confirm Order  </Button>
+      <div style={{ display: "flex", justifyContent: "space-between", marginTop: "3%"}}>
+        <Button onClick={handleGoBackToOrderPage} style={ButtonStyle}>Go Back to Order Page</Button>
+        <Button onClick={handleConfirmOrder} style={ButtonStyle}>Confirm Order  </Button>
      
 
       </div>
+      </Theme>
+      </div>
+      </Theme>
     </div>
+    
+
+
   );
 }
 

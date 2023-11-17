@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { signOut } from "../../store/slices/authSlice";
 import AnalyticsTable from "../../components/AnalyticsTable";
 
+
 const Home = () => {
   const router = useRouter();
   const { user, loadingUser } = useSelector((state) => state.userAuth);

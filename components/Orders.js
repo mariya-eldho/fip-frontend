@@ -23,6 +23,7 @@ function BatchExpansion() {
   const [allItemsAdded, setAllItemsAdded] = useState(false);
   const [queryParamNotAdded, setQueryParamNotAdded] = useState(true)
   const [quantities, setQuantities] = useState([]);
+  const [addedToCart, setAddedToCart] = useState({});
 
 
   const addToCart = (dish) => {
@@ -33,12 +34,14 @@ function BatchExpansion() {
 
     // Create a new object with extracted information
     const newDish = { id, name, price };
-    console.log("Adding to cart", dish);
-
-    // Update the local state with the new item
-    setCartItems((prevItems) => [...prevItems, newDish]);
-    setQuantities(quantities);
+    const newQ = {quantities};
+    if (!addedToCart[id]) {
+      setCartItems((prevItems) => [...prevItems, newDish]);
+      setAddedToCart((prevAdded) => ({ ...prevAdded, [id]: true }));
+    }
   };
+
+  
 
   useEffect(() => {
     // Save cartItems to local storage when it changes
@@ -81,37 +84,97 @@ function BatchExpansion() {
     {
       id: "a",
       name: "Thali",
-      status: <div style={{ padding: "1rem", textAlign: "center", }}> <Button style={{ backgroundColor: "#640aa8", }} onClick={() => addToCart(rows[0])}>Add to Cart</Button> </div>,
+      status: (
+        <div style={{ padding: "1rem", textAlign: "center" }}>
+          <Button
+            style={{ backgroundColor: "#640aa8" }}
+            onClick={() => addToCart(rows[0])}
+            disabled={addedToCart["a"]}
+          >
+            {addedToCart["a"] ? "Added to Cart" : "Add to Cart"}
+          </Button>
+        </div>
+      ),
       price: "170",
     },
     {
       id: "b",
       name: "Chicken Biryani",
-      status: <div style={{ padding: "1rem", textAlign: "center", }}> <Button style={{ backgroundColor: "#640aa8", }} onClick={() => addToCart(rows[1])}>Add to Cart</Button> </div>,
+      status: (
+        <div style={{ padding: "1rem", textAlign: "center" }}>
+          <Button
+            style={{ backgroundColor: "#640aa8" }}
+            onClick={() => addToCart(rows[1])}
+            disabled={addedToCart["b"]}
+          >
+            {addedToCart["b"] ? "Added to Cart" : "Add to Cart"}
+          </Button>
+        </div>
+      ),
       price: "170",
     },
     {
       id: "c",
       name: "Veg Meals",
-      status: <div style={{ padding: "1rem", textAlign: "center", }}> <Button style={{ backgroundColor: "#640aa8", }} onClick={() => addToCart(rows[2])}>Add to Cart</Button> </div>,
+      status: (
+        <div style={{ padding: "1rem", textAlign: "center" }}>
+          <Button
+            style={{ backgroundColor: "#640aa8" }}
+            onClick={() => addToCart(rows[2])}
+            disabled={addedToCart["c"]}
+          >
+            {addedToCart["c"] ? "Added to Cart" : "Add to Cart"}
+          </Button>
+        </div>
+      ),
       price: "170",
     },
     {
       id: "d",
       name: "Veg Biryani",
-      status: <div style={{ padding: "1rem", textAlign: "center", }}> <Button style={{ backgroundColor: "#640aa8", }} onClick={() => addToCart(rows[3])}>Add to Cart</Button> </div>,
+      status: (
+        <div style={{ padding: "1rem", textAlign: "center" }}>
+          <Button
+            style={{ backgroundColor: "#640aa8" }}
+            onClick={() => addToCart(rows[3])}
+            disabled={addedToCart["d"]}
+          >
+            {addedToCart["d"] ? "Added to Cart" : "Add to Cart"}
+          </Button>
+        </div>
+      ),
       price: "170",
     },
     {
       id: "e",
-      name: "Fish Meals",
-      status: <div style={{ padding: "1rem", textAlign: "center", }}> <Button style={{ backgroundColor: "#640aa8", }} onClick={() => addToCart(rows[4])}>Add to Cart</Button> </div>,
+      name: "Fish",
+      status: (
+        <div style={{ padding: "1rem", textAlign: "center" }}>
+          <Button
+            style={{ backgroundColor: "#640aa8" }}
+            onClick={() => addToCart(rows[4])}
+            disabled={addedToCart["e"]}
+          >
+            {addedToCart["e"] ? "Added to Cart" : "Add to Cart"}
+          </Button>
+        </div>
+      ),
       price: "170",
     },
     {
       id: "f",
       name: "Noodles",
-      status: <div style={{ padding: "1rem", textAlign: "center", }}> <Button style={{ backgroundColor: "#640aa8", }} onClick={() => addToCart(rows[5])}>Add to Cart</Button> </div> ,
+      status: (
+        <div style={{ padding: "1rem", textAlign: "center" }}>
+          <Button
+            style={{ backgroundColor: "#640aa8" }}
+            onClick={() => addToCart(rows[5])}
+            disabled={addedToCart["f"]}
+          >
+            {addedToCart["f"] ? "Added to Cart" : "Add to Cart"}
+          </Button>
+        </div>
+      ),
       price: "170",
     },
   ];
@@ -136,15 +199,13 @@ function BatchExpansion() {
       style={{
         display: "flex",
         flexDirection: "column",
-        height: "100%",
-        width: "80%",
+        height: "100vh",
+        width: "100%",
         margin: "auto",
         padding: "90px",
       }}
     >
-      {/* {successMessage && (
-        <div className="success-message">{successMessage}</div>
-      )} */}
+      
       <DataTable
         rows={rows}
         headers={headers}
@@ -166,7 +227,7 @@ function BatchExpansion() {
               height: "100vh",
             }}
           >
-            <Theme theme="g90">
+          
               <TableContainer
                 title="Order your Favourite Food"
                 description=""
@@ -224,9 +285,9 @@ function BatchExpansion() {
                   paddingTop: "1rem",
                 }}
               >
-                <Button onClick={handleGoToCart}>Go to Cart</Button>
+                <Button onClick={handleGoToCart} style={{ backgroundColor: "#640aa8", }}>Go to Cart</Button>
               </div>
-            </Theme>
+
           </div>
         )}
       />
