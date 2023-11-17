@@ -42,6 +42,7 @@ const LoginPage = () => {
           labelText="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          style={{ marginBottom: "10px" }}
         />
         <br/>
         <TextInput
@@ -50,6 +51,7 @@ const LoginPage = () => {
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          style={{ marginBottom: "10px" }}
         />
         <Button type="submit" style={{ marginTop: "20px", paddingLeft: "19%" ,width:"100%", backgroundColor:"#450d73", justifyContent:"space-around",}}>
         LOGIN

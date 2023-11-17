@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { Button, DatePicker, DatePickerInput } from "carbon-components-react";
 import Table from "../../components/DataTable";
@@ -9,6 +9,7 @@ import AnalyticsTable from "../../components/AnalyticsTable";
 const Home = () => {
   const router = useRouter();
   const { user, loadingUser } = useSelector((state) => state.userAuth);
+  const [date, setDate] = useState(new Date());
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -21,10 +22,6 @@ const Home = () => {
     }
   }, [user, loadingUser]);
 
-  const handleLogout = async () => {
-    await dispatch(signOut());
-    router.push("/");
-  };
   return (
     <div
       style={{
@@ -38,9 +35,10 @@ const Home = () => {
     >
       <DatePicker
         datePickerType="single"
+        value={date}
         onChange={function noRefCheck(e) {
           console.log(e);
-          console.log(new Date(e));
+          setDate(new Date(e));
         }}
         onClose={function noRefCheck() {}}
         onOpen={function noRefCheck() {}}
@@ -56,7 +54,7 @@ const Home = () => {
           placeholder="mm/dd/yyyy"
         />
       </DatePicker>
-      <AnalyticsTable />
+      <AnalyticsTable date={date} />
       {/* <Table /> */}
       {/* {loadingUser && <p>Loading...</p>}
       {user && (
@@ -64,9 +62,9 @@ const Home = () => {
           Congratulations {user?.email}! You are logged in as a Service Provider
         </div>
       )} */}
-      <Button onClick={handleLogout} style={{ marginTop: "20px" }}>
+      {/* <Button onClick={handleLogout} style={{ marginTop: "20px" }}>
         Sign Out
-      </Button>
+      </Button> */}
     </div>
   );
 };

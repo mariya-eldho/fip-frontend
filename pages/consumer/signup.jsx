@@ -50,6 +50,7 @@ const SignUp = () => {
           labelText="Name"
           value={userName}
           onChange={(e) => setUserName(e.target.value)}
+          style={{ marginBottom: "10px" }}
         />
         <TextInput
           id="email"
@@ -57,6 +58,7 @@ const SignUp = () => {
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          style={{ marginBottom: "10px" }}
         />
         <TextInput
           id="password"
@@ -64,6 +66,7 @@ const SignUp = () => {
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          style={{ marginBottom: "10px" }}
         />
         <Button type="submit" style={{ marginTop: "20px", paddingLeft: "19%" ,width:"100%", backgroundColor:"#450d73", justifyContent:"space-around",}}>
         SIGN UP
