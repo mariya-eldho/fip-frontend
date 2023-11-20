@@ -40,13 +40,16 @@ function BatchExpansion() {
   const [quantities, setQuantities] = useState([]);
   const [addedToCart, setAddedToCart] = useState({});
   const [data, setData] = useState([]);
+  const [foodName, setFoodName] = useState(" ");
+  const [foodPrice, setFoodPrice] = useState(" ");
+  const [id, setId] = useState(" ");
 
 
   const addToCart = (id, foodName, foodPrice) => {
-    console.log(`Adding to cart: ${foodName} - ${foodPrice}`);
+    console.log(`Addinggg to cart: ${foodName} - ${foodPrice}`);
 
     const newDish = {id: id, name: foodName, price: foodPrice };
-
+  
     if (!addedToCart[id]) {
       setCartItems((prevItems) => [...prevItems, newDish]);
       setAddedToCart((prevAdded) => ({ ...prevAdded, [id]: true }));
@@ -74,10 +77,10 @@ function BatchExpansion() {
             <div style={{ padding: "1rem", textAlign: "center" }}>
               <Button
                 style={{ backgroundColor: "#640aa8" }}
-                onClick={() => addToCart(index, item.name, item.price)}
-                disabled={addedToCart["d"]}
+                onClick={() => addToCart(id, item.name, item.price)}
+                disabled={addedToCart[id]}
               >
-                {addedToCart["d"] ? "Added to Cart" : "Add to Cart"}
+                {addedToCart[id] ? "Added to Cart" : "Add to Cart"}
               </Button>
             </div>
           ),
@@ -107,10 +110,13 @@ function BatchExpansion() {
         query: {
           cartItems: JSON.stringify(cartItems),
           quantities: quantities,
+          foodName: foodName,
+          foodPrice: foodPrice,
         },
       });
     }
   }, [allItemsAdded, router]);
+  
   
 
   useEffect(() => {

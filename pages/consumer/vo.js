@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
+import { useSelector } from "react-redux";
 import { ContainedList, ContainedListItem, Button, Theme } from "@carbon/react";
 import { Close20 as Close } from "@carbon/icons-react";
 import { action } from "@storybook/addon-actions";
 
 
 function WithInteractiveItemsAndActions() {
-
+  const { user, loadingUser } = useSelector((state) => state.userAuth);
   const onClick = action('onClick (ContainedListItem)');
   const itemAction = <Button kind="ghost" iconDescription="Dismiss" hasIconOnly renderIcon={Close} />;
   const [cartItems, setCartItems] = useState([]);
@@ -18,53 +19,47 @@ function WithInteractiveItemsAndActions() {
 
   const router = useRouter();
 
-
-  useEffect(() => {
-    const { dishId, dishName, dishPrice, cartItems: cartItemsQuery } = router.query;
-    const { quantities } = router.query;
-    const { price } = router.query;
-    console.log("hi");
-    console.log(cartItemsQuery);
-   
-
-    // Parse cartItems from the query string
-    const parsedCartItems = cartItemsQuery ? JSON.parse(cartItemsQuery) : [];
-
-    console.log("hiii");
-    console.log(parsedCartItems);
-
-    if(queryParamNotAdded) {
-        setCartItems((prevItems) => [...prevItems, ...parsedCartItems]);
-        setQueryParamNotAdded(true);
-    }
-
-    setQuantities(quantities);
-    setPrice(price);
-    console.log("Hiiiiiii");
-    console.log(setCartItems(parsedCartItems));
-
-    
-    
-    // Handle other details like dishId, dishName, dishPrice as needed
-    console.log('Dish Details:', cartItemsQuery);
-    const s = localStorage.setItem("cart",cartItemsQuery);
- }, [router.query]);
-
-
   const goToHome = () => {
     router.push('/consumer');
   }
 
+  const fetchData = async () => {
+    try {
+      const userId = user.id; // Replace with the actual user ID
+      const response = await fetch("http://127.0.0.1:5000/list_order_customer", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userid: userId }),
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Network request failed with status: ${response.status}`);
+      }
+  
+      const result = await response.json();
+      console.log(result); 
+      setCartItems(result);
+    } catch (error) {
+      console.error("Error during fetch:", error);
+    }
+  };
+    
+   useEffect(() => {
+     fetchData();
+   }, []);
+   
   const renderCartItems = () => {
     
     return cartItems.map((item, index) => (
       
       <ContainedListItem key={item.id}  action={itemAction}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", margin: "1%", }}>
-          <span>{item.name}</span>
+          <span>{item.food_name}</span>
           <div style={{ display: "flex", alignItems: "center" }}>
-             <span style={{ margin: "0 0.5rem" }}> Quantity: {quantities[index]}</span>
-             <span style={{ margin: "0 0.5rem" }}>Price : { [quantities[index]*item.price] }</span>          
+             <span style={{ margin: "0 0.5rem" }}> Quantity: {item.quantity}</span>
+             <span style={{ margin: "0 0.5rem" }}>Price : {item.price}</span>          
           </div>
         </div>
       </ContainedListItem>
@@ -74,7 +69,7 @@ function WithInteractiveItemsAndActions() {
 
   const { dishId, dishName, dishPrice } = router.query;
 
- 
+  
 
   return (
     <div>
@@ -93,6 +88,7 @@ function WithInteractiveItemsAndActions() {
       <ContainedList label="Your Cart" kind="on-page" action={''} >
       
           {renderCartItems()}
+         {/* { fetchData() } */}
      
        </ContainedList>
        
