@@ -10,22 +10,16 @@ import { useSelector, useDispatch } from 'react-redux';
 
 
 function WithInteractiveItemsAndActions() {
-  
-  console.log("Cartitems");
 
   const dispatch = useDispatch();
-  //const cartItems = useSelector((state) => state.cartItems);
   const onClick = action('onClick (ContainedListItem)');
-  //const { dishId, dishName, dishPrice } = router.query;
   const itemAction = <Button kind="ghost" iconDescription="Dismiss" hasIconOnly renderIcon={Close} />;
-
-  // Create an array of quantities, one for each item
   const initialQuantities = [1];
   const [quantities, setQuantities] = useState([initialQuantities]);
   const [cartItems, setCartItems] = useState([]);
   const [queryParamNotAdded, setQueryParamNotAdded] = useState(true)
   const [allItemsAdded, setAllItemsAdded] = useState(false);
-  
+
   console.log(cartItems);
 
   const increaseQuantity = (index) => {
@@ -54,25 +48,17 @@ function WithInteractiveItemsAndActions() {
 
   const router = useRouter();
 
-  //const history = useNavigate();
+
 
   useEffect(() => {
-    // Extract dish details from the router query
     setCartItems((prevItems) => [...prevItems, cartItems]);
     const { dishId, dishName, dishPrice, cartItems: cartItemsQuery } = router.query;
-    
-    console.log("hi");
-    console.log(cartItemsQuery);
-   
-
-    // Parse cartItems from the query string
     const parsedCartItems = cartItemsQuery ? JSON.parse(cartItemsQuery) : [];
 
     console.log("hiii");
     console.log(parsedCartItems);
     
-    // Update the component state with the new cart items
-    //setCartItems(parsedCartItems);
+
     if(queryParamNotAdded) {
       setCartItems((prevItems) => [...prevItems, ...parsedCartItems]);
       setQueryParamNotAdded(true);
@@ -82,28 +68,21 @@ function WithInteractiveItemsAndActions() {
     console.log("Hiiiiiii");
     console.log(setCartItems(parsedCartItems));
 
-    // Update the quantities state based on the length of cart items
     setQuantities(new Array(parsedCartItems.length).fill(1));
     const s = localStorage.setItem("cart",cartItemsQuery);
-    // Handle other details like dishId, dishName, dishPrice as needed
+
     console.log('Dish Details:', cartItemsQuery);
-   
-  
-      // Navigate to the cart page
-      
     
   }, [router.query]);
 
 
   const handleConfirmOrder = () => {
-   // setCartItems((prevItems) => [...prevItems, cartItems]);
     const isCartEmpty = cartItems.length === 0;
     if (isCartEmpty) {
       alert('Your cart is empty. Please add items to your cart before confirming the order.');
       return;
     }
     else{
-      //router.push('/consumer/order-confirm');
       alert('Your order placed successfully !');
       router.push({
         pathname: "/consumer/vo",
@@ -120,9 +99,8 @@ function WithInteractiveItemsAndActions() {
   };
 
   const handleGoBackToOrderPage = () => {
-   // localStorage.getItem('cartItems');
-   localStorage.setItem('cartItems', JSON.stringify(cartItems))
-    //localStorage.getItem('s');
+
+   localStorage.setItem('cartItems', JSON.stringify(cartItems));
     router.push({
       pathname: "/consumer",
       query: {
@@ -134,14 +112,15 @@ function WithInteractiveItemsAndActions() {
  
   };
 
-  
+ 
   
 
   const renderCartItems = () => {
     return cartItems.map((item, index) => (
       <ContainedListItem key={item.id} action={itemAction}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginLeft: "3%", }}>
-          <span>{item.name}</span>
+          <span >{item.name}</span>
+          <span style={{ margin: "0 0.5rem" }} > { [quantities[index]*item.price] }</span>
           <div style={{ display: "flex", alignItems: "center" }}>
   
             {quantities[index] > 1 && <Button onClick={() => decreaseQuantity(index)} style={decreaseButtonStyle}>-</Button>}

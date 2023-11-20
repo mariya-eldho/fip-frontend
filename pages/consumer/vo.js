@@ -3,41 +3,12 @@ import { useRouter } from "next/router";
 import { ContainedList, ContainedListItem, Button, Theme } from "@carbon/react";
 import { Close20 as Close } from "@carbon/icons-react";
 import { action } from "@storybook/addon-actions";
-import Ord from './order-confirm';
 
-// const OneTimeDiv = () => {
-//     const [hasRendered, setHasRendered] = useState(true);
-  
-//     useEffect(() => {
-//       // Check if the flag is set in localStorage
-//       const hasRenderedBefore = localStorage.getItem('hasRendered');
-  
-//       if (!hasRenderedBefore) {
-//         // Render the div and set the flag in localStorage
-//         setHasRendered(true);
-//         localStorage.setItem('hasRendered', 'false');
-//       }
-//     }, []);
-//     return hasRendered ? (
-//         <div>
-//           {/* Your one-time div content */}
-//            <Ord />
-//         </div>
-//       ) : (<div></div>);
-// }
 
 function WithInteractiveItemsAndActions() {
 
-  
-  console.log("Cartitems");
-
-
-  //const cartItems = useSelector((state) => state.cartItems);
   const onClick = action('onClick (ContainedListItem)');
-  //const { dishId, dishName, dishPrice } = router.query;
-  
   const itemAction = <Button kind="ghost" iconDescription="Dismiss" hasIconOnly renderIcon={Close} />;
-
   const [cartItems, setCartItems] = useState([]);
   const [quantities, setQuantities] = useState([]);
   const [price, setPrice] = useState([]);
@@ -49,9 +20,7 @@ function WithInteractiveItemsAndActions() {
 
 
   useEffect(() => {
-    // Extract dish details from the router query
-   const { dishId, dishName, dishPrice, cartItems: cartItemsQuery } = router.query;
-    
+    const { dishId, dishName, dishPrice, cartItems: cartItemsQuery } = router.query;
     const { quantities } = router.query;
     const { price } = router.query;
     console.log("hi");
@@ -64,55 +33,38 @@ function WithInteractiveItemsAndActions() {
     console.log("hiii");
     console.log(parsedCartItems);
 
-    // Update the component state with the new cart items
-    //setCartItems(parsedCartItems);
     if(queryParamNotAdded) {
         setCartItems((prevItems) => [...prevItems, ...parsedCartItems]);
         setQueryParamNotAdded(true);
-      }
+    }
+
     setQuantities(quantities);
     setPrice(price);
     console.log("Hiiiiiii");
     console.log(setCartItems(parsedCartItems));
 
-    // Update the quantities state based on the length of cart items
-   // setQuantities(new Array(parsedCartItems.length).fill(1));
+    
     
     // Handle other details like dishId, dishName, dishPrice as needed
     console.log('Dish Details:', cartItemsQuery);
     const s = localStorage.setItem("cart",cartItemsQuery);
  }, [router.query]);
 
-//   useEffect(() => {
-//     const { dishId, dishName, dishPrice, cartItems: cartItemsQuery } = router.query;
-//     const parsedCartItems = cartItemsQuery ? JSON.parse(cartItemsQuery) : [];
 
-//    // dispatch(clearCart());
-//     parsedCartItems.forEach((item) => dispatch({ type: 'ADD_TO_CART', payload: item }));
-
-//     console.log('Dish Details:', { dishId, dishName, dishPrice });
-//   }, [router.query]);
-  
   const goToHome = () => {
     router.push('/consumer');
   }
-
-
-  
 
   const renderCartItems = () => {
     
     return cartItems.map((item, index) => (
       
-      <ContainedListItem key={item.id} action={itemAction}>
+      <ContainedListItem key={item.id}  action={itemAction}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", margin: "1%", }}>
           <span>{item.name}</span>
           <div style={{ display: "flex", alignItems: "center" }}>
-
-          
-           <span style={{ margin: "0 0.5rem" }}> Quantity: {quantities[index]}</span>
-            <span style={{ margin: "0 0.5rem" }}>Price : { [quantities[index]*item.price] }</span>
-            
+             <span style={{ margin: "0 0.5rem" }}> Quantity: {quantities[index]}</span>
+             <span style={{ margin: "0 0.5rem" }}>Price : { [quantities[index]*item.price] }</span>          
           </div>
         </div>
       </ContainedListItem>
@@ -121,19 +73,9 @@ function WithInteractiveItemsAndActions() {
   };
 
   const { dishId, dishName, dishPrice } = router.query;
-  
-//   const [hasRendered, setHasRendered] = useState(true);
-  
-//     useEffect(() => {
-//       // Check if the flag is set in localStorage
-//       const hasRenderedBefore = localStorage.getItem('hasRendered');
-  
-//       if (!hasRenderedBefore) {
-//         // Render the div and set the flag in localStorage
-//         setHasRendered(true);
-//         localStorage.setItem('hasRendered', 'false');
-//       }
-//     }, []);
+
+ 
+
   return (
     <div>
       <Theme theme="white">
@@ -148,10 +90,9 @@ function WithInteractiveItemsAndActions() {
       }}
     >
       <Theme theme="g10">
-        {/* {hasRendered ? (<div> <Ord /></div>) : null} */}
       <ContainedList label="Your Cart" kind="on-page" action={''} >
       
-      {renderCartItems()}
+          {renderCartItems()}
      
        </ContainedList>
        
