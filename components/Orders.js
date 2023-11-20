@@ -17,6 +17,21 @@ import {
 } from "@carbon/react";
 import { async } from "@firebase/util";
 
+const headers = [
+  {
+    key: "foodName",
+    header: "Dish",
+  },
+  {
+    key: "foodPrice",
+    header: "Price",
+  },
+  {
+    key: "orderFood",
+    header: <div style={{ textAlign: "center" }}>Orders Expected</div>,
+  },
+];
+
 function BatchExpansion() {
   const router = useRouter();
   const [cartItems, setCartItems] = useState([]);
@@ -24,46 +39,69 @@ function BatchExpansion() {
   const [queryParamNotAdded, setQueryParamNotAdded] = useState(true)
   const [quantities, setQuantities] = useState([]);
   const [addedToCart, setAddedToCart] = useState({});
+  const [data, setData] = useState([]);
 
 
-  const addToCart = (dish) => {
-    console.log('Adding to Cart:', dish);
+  const addToCart = (id, foodName, foodPrice) => {
+    console.log(`Adding to cart: ${foodName} - ${foodPrice}`);
 
-    // Extract necessary information from dish
-    const { id, name, price } = dish;
+    const newDish = {id: id, name: foodName, price: foodPrice };
 
-    // Create a new object with extracted information
-    const newDish = { id, name, price };
-    const newQ = {quantities};
     if (!addedToCart[id]) {
       setCartItems((prevItems) => [...prevItems, newDish]);
       setAddedToCart((prevAdded) => ({ ...prevAdded, [id]: true }));
     }
   };
-
   
 
-  useEffect(() => {
-    // Save cartItems to local storage when it changes
-    localStorage.setItem("cartItems", JSON.stringify(cartItems));
-  }, [cartItems]);
 
   useEffect(() => {
-    // Extract dish details from the router query
-    const { dishId, dishName, dishPrice, cartItems: cartItemsQuery } = router.query;
-    console.log("hi");
-    console.log(cartItemsQuery);
-    // Parse cartItems from the query string
+    const fetchData = async () => {
+      try {
+        const response = await fetch("http://127.0.0.1:5000/list_food");
+  
+        if (!response.ok) {
+          throw new Error("Network request failed");
+        }
+  
+        const result = await response.json();
+  
+        const displayOrders = result.map((item, index) => ({
+          id: index,
+          foodName: item.name,
+          foodPrice: item.price,
+          orderFood: (
+            <div style={{ padding: "1rem", textAlign: "center" }}>
+              <Button
+                style={{ backgroundColor: "#640aa8" }}
+                onClick={() => addToCart(index, item.name, item.price)}
+                disabled={addedToCart["d"]}
+              >
+                {addedToCart["d"] ? "Added to Cart" : "Add to Cart"}
+              </Button>
+            </div>
+          ),
+        }));
+        
+        setData(displayOrders);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    
+    fetchData();
+  }, []);
+  
+   
+  useEffect(() => {
+    const { cartItems: cartItemsQuery } = router.query;
     const parsedCartItems = cartItemsQuery ? JSON.parse(cartItemsQuery) : [];
-    console.log("parsedCartItems")
-    console.log(parsedCartItems)
-    if(queryParamNotAdded) {
-    setCartItems((prevItems) => [...prevItems, ...parsedCartItems]);
-    setQueryParamNotAdded(true);
+    if (queryParamNotAdded) {
+      setCartItems((prevItems) => [...prevItems, ...parsedCartItems]);
+      setQueryParamNotAdded(true);
     }
-    // Check if all items have been added
+  
     if (allItemsAdded) {
-      // Navigate to the cart page
       router.push({
         pathname: "/consumer/CP",
         query: {
@@ -73,126 +111,23 @@ function BatchExpansion() {
       });
     }
   }, [allItemsAdded, router]);
+  
+
+  useEffect(() => {
+    localStorage.setItem("cartItems", JSON.stringify(cartItems));
+  }, [cartItems]);
+
+ 
 
   const handleGoToCart = () => {
-    // Set the allItemsAdded state to true
+
     setAllItemsAdded(true);
     localStorage.setItem('cartItems', JSON.stringify(cartItems));
   };
 
-  const rows = [
-    {
-      id: "a",
-      name: "Thali",
-      status: (
-        <div style={{ padding: "1rem", textAlign: "center" }}>
-          <Button
-            style={{ backgroundColor: "#640aa8" }}
-            onClick={() => addToCart(rows[0])}
-            disabled={addedToCart["a"]}
-          >
-            {addedToCart["a"] ? "Added to Cart" : "Add to Cart"}
-          </Button>
-        </div>
-      ),
-      price: "170",
-    },
-    {
-      id: "b",
-      name: "Chicken Biryani",
-      status: (
-        <div style={{ padding: "1rem", textAlign: "center" }}>
-          <Button
-            style={{ backgroundColor: "#640aa8" }}
-            onClick={() => addToCart(rows[1])}
-            disabled={addedToCart["b"]}
-          >
-            {addedToCart["b"] ? "Added to Cart" : "Add to Cart"}
-          </Button>
-        </div>
-      ),
-      price: "170",
-    },
-    {
-      id: "c",
-      name: "Veg Meals",
-      status: (
-        <div style={{ padding: "1rem", textAlign: "center" }}>
-          <Button
-            style={{ backgroundColor: "#640aa8" }}
-            onClick={() => addToCart(rows[2])}
-            disabled={addedToCart["c"]}
-          >
-            {addedToCart["c"] ? "Added to Cart" : "Add to Cart"}
-          </Button>
-        </div>
-      ),
-      price: "170",
-    },
-    {
-      id: "d",
-      name: "Veg Biryani",
-      status: (
-        <div style={{ padding: "1rem", textAlign: "center" }}>
-          <Button
-            style={{ backgroundColor: "#640aa8" }}
-            onClick={() => addToCart(rows[3])}
-            disabled={addedToCart["d"]}
-          >
-            {addedToCart["d"] ? "Added to Cart" : "Add to Cart"}
-          </Button>
-        </div>
-      ),
-      price: "170",
-    },
-    {
-      id: "e",
-      name: "Fish",
-      status: (
-        <div style={{ padding: "1rem", textAlign: "center" }}>
-          <Button
-            style={{ backgroundColor: "#640aa8" }}
-            onClick={() => addToCart(rows[4])}
-            disabled={addedToCart["e"]}
-          >
-            {addedToCart["e"] ? "Added to Cart" : "Add to Cart"}
-          </Button>
-        </div>
-      ),
-      price: "170",
-    },
-    {
-      id: "f",
-      name: "Noodles",
-      status: (
-        <div style={{ padding: "1rem", textAlign: "center" }}>
-          <Button
-            style={{ backgroundColor: "#640aa8" }}
-            onClick={() => addToCart(rows[5])}
-            disabled={addedToCart["f"]}
-          >
-            {addedToCart["f"] ? "Added to Cart" : "Add to Cart"}
-          </Button>
-        </div>
-      ),
-      price: "170",
-    },
-  ];
 
-  const headers = [
-    {
-      key: "name",
-      header: "Dish",
-    },
-    {
-      key: "price",
-      header: "Price",
-    },
-    {
-      key: "status",
-      header: <div style={{ textAlign: "center" }}>Orders Expected</div>,
-    },
-  ];
+
+
 
   return (
     <div
@@ -207,7 +142,7 @@ function BatchExpansion() {
     >
       
       <DataTable
-        rows={rows}
+        rows={data}
         headers={headers}
         render={({
           rows,
@@ -296,5 +231,4 @@ function BatchExpansion() {
 }
 
 export default BatchExpansion;
-
 
