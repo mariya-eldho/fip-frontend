@@ -33,7 +33,7 @@ const AddItem = () => {
           // Additional headers can be added here
         },
         body: JSON.stringify({
-          id: shortid.generate(),
+          food_id: shortid.generate(),
           name: foodName,
           price: price,
           type: currentItem,

@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import { ContainedList, ContainedListItem, Button, Theme } from "@carbon/react";
+import { ContainedList, ContainedListItem, Button, Theme, TextInput } from "@carbon/react";
 import { Close20 as Close } from "@carbon/icons-react";
 
 import { action } from "@storybook/addon-actions";
 import { useSelector, useDispatch } from 'react-redux';
+import shortid from "shortid";
 
 
 
 
 function WithInteractiveItemsAndActions() {
 
+  const { user, loadingUser } = useSelector((state) => state.userAuth);
   const dispatch = useDispatch();
   const onClick = action('onClick (ContainedListItem)');
   const itemAction = <Button kind="ghost" iconDescription="Dismiss" hasIconOnly renderIcon={Close} />;
@@ -19,8 +21,10 @@ function WithInteractiveItemsAndActions() {
   const [cartItems, setCartItems] = useState([]);
   const [queryParamNotAdded, setQueryParamNotAdded] = useState(true)
   const [allItemsAdded, setAllItemsAdded] = useState(false);
-
-  console.log(cartItems);
+  const [foodName, setFoodName] = useState(" ");
+  const [foodPrice, setFoodPrice] = useState("");
+  const [id, setId] = useState(" ");
+  const [loading, setLoading] = useState(false);
 
   const increaseQuantity = (index) => {
     const newQuantities = [...quantities];
@@ -73,30 +77,10 @@ function WithInteractiveItemsAndActions() {
 
     console.log('Dish Details:', cartItemsQuery);
     
+    
   }, [router.query]);
 
 
-  const handleConfirmOrder = () => {
-    const isCartEmpty = cartItems.length === 0;
-    if (isCartEmpty) {
-      alert('Your cart is empty. Please add items to your cart before confirming the order.');
-      return;
-    }
-    else{
-      alert('Your order placed successfully !');
-      router.push({
-        pathname: "/consumer/vo",
-        query: {
-          cartItems: JSON.stringify(cartItems),
-          quantities: quantities,
-          price : quantities * {dishPrice},
-        },
-      });
-     
-    }
-      
-
-  };
 
   const handleGoBackToOrderPage = () => {
 
@@ -120,7 +104,7 @@ function WithInteractiveItemsAndActions() {
       <ContainedListItem key={item.id} action={itemAction}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginLeft: "3%", }}>
           <span >{item.name}</span>
-          <span style={{ margin: "0 0.5rem" }} > { [quantities[index]*item.price] }</span>
+          <span>{ [quantities[index]*item.price] }</span>
           <div style={{ display: "flex", alignItems: "center" }}>
   
             {quantities[index] > 1 && <Button onClick={() => decreaseQuantity(index)} style={decreaseButtonStyle}>-</Button>}
@@ -132,6 +116,46 @@ function WithInteractiveItemsAndActions() {
         </div>
       </ContainedListItem>
     ));
+  };
+
+  const handleConfirmOrder = async () => {
+    setAllItemsAdded(true);
+    const isCartEmpty = cartItems.length === 0;
+    if (isCartEmpty) {
+      alert('Your cart is empty. Please add items to your cart before confirming the order.');
+      return;
+    }
+    try {      
+      const orderData = cartItems.map((item, index) => ({
+        date: "2023-11-20",
+        food_name: item.name,
+        quantity: quantities[index],
+        price: [item.price] * [quantities[index]]  ,
+        age: "35",
+        foodid: index,
+        userid: user.id ,
+        status : "false",
+        orderid: shortid.generate(),
+      }));
+  
+      const response = await fetch("http://127.0.0.1:5000/order", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(orderData),
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Network request failed with status: ${response.status}`);
+      }
+
+      console.log("Order successfully submitted!");
+      router.push('/consumer/vo');
+  
+    } catch (error) {
+      console.error("Error during fetch:", error);
+    }
   };
   
   const baseButtonStyle = {
@@ -172,11 +196,6 @@ function WithInteractiveItemsAndActions() {
     color: "white",
   };
   
-  // ... (rest of your component code)
-  
-  
-  
-
   const { dishId, dishName, dishPrice } = router.query;
 
   return (
