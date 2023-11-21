@@ -15,185 +15,134 @@ import {
   Button,
   Theme,
 } from "@carbon/react";
+import { async } from "@firebase/util";
+
+const headers = [
+  {
+    key: "foodName",
+    header: "Dish",
+  },
+  {
+    key: "foodPrice",
+    header: "Price",
+  },
+  {
+    key: "orderFood",
+    header: <div style={{ textAlign: "center" }}>Orders Expected</div>,
+  },
+];
 
 function BatchExpansion() {
   const router = useRouter();
   const [cartItems, setCartItems] = useState([]);
-  const [addedToCart, setAddedToCart] = useState({});
   const [allItemsAdded, setAllItemsAdded] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [queryParamNotAdded, setQueryParamNotAdded] = useState(true)
+  const [quantities, setQuantities] = useState([]);
+  const [addedToCart, setAddedToCart] = useState({});
+  const [data, setData] = useState([]);
 
-  const addToCart = (dish) => {
-    const { id, name, price } = dish;
-    const newDish = { id, name, price };
-    console.log("Adding to cart", dish);
 
-    // Check if the item has already been added to the cart
+  const addToCart = (id, foodName, foodPrice) => {
+    console.log(`Adding to cart: ${foodName} - ${foodPrice}`);
+
+    const newDish = {id: id, name: foodName, price: foodPrice };
+
     if (!addedToCart[id]) {
       setCartItems((prevItems) => [...prevItems, newDish]);
       setAddedToCart((prevAdded) => ({ ...prevAdded, [id]: true }));
-
-      // Set the success message
-      setSuccessMessage(`${name} added to cart!`);
-
-      // Clear the message after a short delay
-      setTimeout(() => {
-        setSuccessMessage("");
-      }, 2000);
     }
   };
-  useEffect(() => {
-    // Save cartItems to local storage when it changes
-    localStorage.setItem("cartItems", JSON.stringify(cartItems));
-  }, [cartItems]);
+  
+
 
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch("http://127.0.0.1:5000/list_food");
+  
+        if (!response.ok) {
+          throw new Error("Network request failed");
+        }
+  
+        const result = await response.json();
+  
+        const displayOrders = result.map((item, index) => ({
+          id: index,
+          foodName: item.name,
+          foodPrice: item.price,
+          orderFood: (
+            <div style={{ padding: "1rem", textAlign: "center" }}>
+              <Button
+                style={{ backgroundColor: "#640aa8" }}
+                onClick={() => addToCart(index, item.name, item.price)}
+                disabled={addedToCart["d"]}
+              >
+                {addedToCart["d"] ? "Added to Cart" : "Add to Cart"}
+              </Button>
+            </div>
+          ),
+        }));
+        
+        setData(displayOrders);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    
+    fetchData();
+  }, []);
+  
+   
+  useEffect(() => {
+    const { cartItems: cartItemsQuery } = router.query;
+    const parsedCartItems = cartItemsQuery ? JSON.parse(cartItemsQuery) : [];
+    if (queryParamNotAdded) {
+      setCartItems((prevItems) => [...prevItems, ...parsedCartItems]);
+      setQueryParamNotAdded(true);
+    }
+  
     if (allItemsAdded) {
-      // Navigate to the cart page
       router.push({
         pathname: "/consumer/CP",
         query: {
           cartItems: JSON.stringify(cartItems),
+          quantities: quantities,
         },
       });
     }
-  }, [allItemsAdded, router, cartItems]);
+  }, [allItemsAdded, router]);
+  
+
+  useEffect(() => {
+    localStorage.setItem("cartItems", JSON.stringify(cartItems));
+  }, [cartItems]);
+
+ 
 
   const handleGoToCart = () => {
-    // Set the allItemsAdded state to true
+
     setAllItemsAdded(true);
+    localStorage.setItem('cartItems', JSON.stringify(cartItems));
   };
 
-  const rows = [
-    {
-      id: "a",
-      name: "Thali",
-      status: (
-        <div style={{ padding: "1rem", textAlign: "center" }}>
-          <Button
-            style={{ backgroundColor: "#640aa8" }}
-            onClick={() => addToCart(rows[0])}
-            disabled={addedToCart["a"]}
-          >
-            {addedToCart["a"] ? "Added to Cart" : "Add to Cart"}
-          </Button>
-        </div>
-      ),
-      price: "170",
-    },
-    {
-      id: "b",
-      name: "Chicken Biryani",
-      status: (
-        <div style={{ padding: "1rem", textAlign: "center" }}>
-          <Button
-            style={{ backgroundColor: "#640aa8" }}
-            onClick={() => addToCart(rows[1])}
-            disabled={addedToCart["b"]}
-          >
-            {addedToCart["b"] ? "Added to Cart" : "Add to Cart"}
-          </Button>
-        </div>
-      ),
-      price: "170",
-    },
-    {
-      id: "c",
-      name: "Veg Meals",
-      status: (
-        <div style={{ padding: "1rem", textAlign: "center" }}>
-          <Button
-            style={{ backgroundColor: "#640aa8" }}
-            onClick={() => addToCart(rows[2])}
-            disabled={addedToCart["c"]}
-          >
-            {addedToCart["c"] ? "Added to Cart" : "Add to Cart"}
-          </Button>
-        </div>
-      ),
-      price: "170",
-    },
-    {
-      id: "d",
-      name: "Veg Biryani",
-      status: (
-        <div style={{ padding: "1rem", textAlign: "center" }}>
-          <Button
-            style={{ backgroundColor: "#640aa8" }}
-            onClick={() => addToCart(rows[3])}
-            disabled={addedToCart["d"]}
-          >
-            {addedToCart["d"] ? "Added to Cart" : "Add to Cart"}
-          </Button>
-        </div>
-      ),
-      price: "170",
-    },
-    {
-      id: "e",
-      name: "Fish",
-      status: (
-        <div style={{ padding: "1rem", textAlign: "center" }}>
-          <Button
-            style={{ backgroundColor: "#640aa8" }}
-            onClick={() => addToCart(rows[4])}
-            disabled={addedToCart["e"]}
-          >
-            {addedToCart["e"] ? "Added to Cart" : "Add to Cart"}
-          </Button>
-        </div>
-      ),
-      price: "170",
-    },
-    {
-      id: "f",
-      name: "Noodles",
-      status: (
-        <div style={{ padding: "1rem", textAlign: "center" }}>
-          <Button
-            style={{ backgroundColor: "#640aa8" }}
-            onClick={() => addToCart(rows[5])}
-            disabled={addedToCart["f"]}
-          >
-            {addedToCart["f"] ? "Added to Cart" : "Add to Cart"}
-          </Button>
-        </div>
-      ),
-      price: "170",
-    },
-  ];
 
-  const headers = [
-    {
-      key: "name",
-      header: "Dish",
-    },
-    {
-      key: "price",
-      header: "Price",
-    },
-    {
-      key: "status",
-      header: <div style={{ textAlign: "center" }}>Orders Expected</div>,
-    },
-  ];
+
+
 
   return (
     <div
       style={{
         display: "flex",
         flexDirection: "column",
-        height: "100%",
-        width: "80%",
+        height: "100vh",
+        width: "100%",
         margin: "auto",
         padding: "90px",
       }}
     >
-      {/* {successMessage && (
-        <div className="success-message">{successMessage}</div>
-      )} */}
+      
       <DataTable
-        rows={rows}
+        rows={data}
         headers={headers}
         render={({
           rows,
@@ -213,7 +162,7 @@ function BatchExpansion() {
               height: "100vh",
             }}
           >
-            <Theme theme="g90">
+          
               <TableContainer
                 title="Order your Favourite Food"
                 description=""
@@ -271,9 +220,9 @@ function BatchExpansion() {
                   paddingTop: "1rem",
                 }}
               >
-                <Button onClick={handleGoToCart}>Go to Cart</Button>
+                <Button onClick={handleGoToCart} style={{ backgroundColor: "#640aa8", }}>Go to Cart</Button>
               </div>
-            </Theme>
+
           </div>
         )}
       />
@@ -282,3 +231,4 @@ function BatchExpansion() {
 }
 
 export default BatchExpansion;
+

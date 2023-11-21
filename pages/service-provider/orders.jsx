@@ -76,7 +76,7 @@ function orders() {
               style={{ backgroundColor: "#0f62fe" }}
               onClick={() => handleCompleted(item, index + 1)}
             >
-              Completed
+              Click to Complete Order
             </Button>{" "}
           </div>
         ),

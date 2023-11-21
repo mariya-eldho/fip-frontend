@@ -1,3 +1,3 @@
-import OrderConfirmation from '../../components/OrderConfirmation';
+import OrderConfirmation from "../../components/OrderConfirmation";  
 
 export default OrderConfirmation;

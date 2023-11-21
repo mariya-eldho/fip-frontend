@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Form, TextInput, Button } from "carbon-components-react";
+import { Form, TextInput, Button, } from "carbon-components-react";
 import { useRouter } from "next/router";
 import { FcGoogle } from "react-icons/fc";
 import styles from "../../styles/login.module.scss";
@@ -10,6 +10,7 @@ import {
 } from "../../store/slices/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import YourImage from '../../public/img.jpg';
+import { Theme } from "@carbon/react";
 
 const LoginPage = () => {
   const dispatch = useDispatch();
@@ -30,7 +31,9 @@ const LoginPage = () => {
   };
 
   return (
-    <div className={styles.loginPageContainer}>
+    <div>
+      <Theme theme="white">
+      <div className={styles.loginPageContainer}>
       {/* Move the login form to the left */}
       <div className={styles.loginForm}>
       <div className={styles.loginHeading}>
@@ -83,7 +86,10 @@ const LoginPage = () => {
         <Image src={YourImage} alt="Your Image"  className={styles.image} />
       </div>
     </div>
-  );
+
+      </Theme>
+    </div>
+      );
 };
 
 export default LoginPage;
